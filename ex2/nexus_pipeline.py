@@ -23,7 +23,7 @@ class ProcessingStage(Protocol):
 class InputStage:
     def process(data: Any) -> dict[Any, Any]:
         if not isinstance(data, str) and not isinstance(data, dict):
-            raise ValueError("The data must be STR on DICT type")
+            raise ValueError("The data must be STR or DICT type")
         print(f"Input: '{data}'")
         return {}
 
@@ -70,9 +70,9 @@ class OutputStage:
             txt1 = f" {nb_action} actions processed"
             return txt + txt1
         elif data["type"] == 2:
-            txt = f"Output: Stream summary: {randint(1, 10)} readings "
+            txt = f"Output: Stream summary: {randint(1, 10)} readings"
             t1 = f"{data['reads']}°C"
-            t2 = ", avg: "
+            t2 = " ,avg: "
             return txt + t2 + t1
         raise ValueError("Error: data have wrong type")
 
@@ -87,6 +87,8 @@ class JSONAdapter(ProcessingPipeline):
             for elt in self.pip:
                 if (elt == TransformStage):
                     data = elt.process(data)
+                elif elt == OutputStage:
+                    print(elt.process(data))
                 else:
                     elt.process(data)
             print(f"Process time == {round(process_time(), 5)}")
@@ -105,6 +107,8 @@ class CSVAdapter(ProcessingPipeline):
             for elt in self.pip:
                 if (elt == TransformStage):
                     data = elt.process(data)
+                elif (elt == OutputStage):
+                    print(elt.process(data))
                 else:
                     elt.process(data)
             print(f"Process time == {round(process_time(), 5)}")
@@ -123,6 +127,8 @@ class StreamAdapter(ProcessingPipeline):
             for elt in self.pip:
                 if (elt == TransformStage):
                     data = elt.process(data)
+                elif elt == OutputStage:
+                    print(elt.process(data))
                 else:
                     elt.process(data)
             print(f"Process time == {round(process_time(), 5)}")

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from time import process_time
 from random import randint
-from typing import Any, Union, Protocol, List
+from typing import Any, Union, Protocol
 
 
 class ProcessingPipeline(ABC):
@@ -61,15 +61,15 @@ class TransformStage:
 
 class OutputStage:
     def process(data: Any) -> str:
-        try:
-            if data["type"] == 0:
-                val = data["value"]
-        except Exception as e:
-            print(f"Error : {e}")
-            return ""
+        if data["type"] == 0:
+            val = data["value"]
             if val > 15 and val < 35:
                 txt = "Output: Processed temperature reading:"
                 txt1 = f" {val} °C (Normal range)"
+                return txt + txt1
+            else:
+                txt = "Output: Processed temperature reading:"
+                txt1 = f" {data['value']} °C (Out of range)"
                 return txt + txt1
         if data["type"] == 1:
             nb_action = data["action"]
@@ -81,14 +81,12 @@ class OutputStage:
             t1 = f"{data['reads']}°C"
             t2 = ", avg: "
             return txt + t2 + t1
-        return "Error: data have wrong type"
+        raise ValueError("Error: data have wrong type")
 
 
 class JSONAdapter(ProcessingPipeline):
     def __init__(self, pip_id: int) -> None:
         super().__init__("JSON", pip_id)
-
-        # type_file: str, my_lst: List[Any], 
 
     def process(self, data: Any) -> Union[str, Any]:
         print(f"Processing {self.file_type} data through pipeline...")
@@ -100,7 +98,7 @@ class JSONAdapter(ProcessingPipeline):
                     elt.process(data)
             print(f"Process time == {round(process_time(), 5)}")
         except Exception as e:
-            print(f"Hadnling error: {e}")
+            print(f"Haddling error: {e}")
         return None
 
 
@@ -118,16 +116,13 @@ class CSVAdapter(ProcessingPipeline):
                     elt.process(data)
             print(f"Process time == {round(process_time(), 5)}")
         except Exception as e:
-            print(f"Hadnling error: {e}")
+            print(f"Handling error: {e}")
         return None
 
 
 class StreamAdapter(ProcessingPipeline):
     def __init__(self, pip_id: int) -> None:
         super().__init__("STREAM", pip_id)
-
-# , type_file: str, my_lst: List[Any], 
-
 
     def process(self, data: Any) -> Union[str, Any]:
         print(f"Processing {self.file_type} data through pipeline...")
@@ -178,7 +173,6 @@ def main() -> None:
         "Stage 3: Output formatting and delivery\n\n"
         "=== Multi-Format Data Processing ===\n"
     )
-    # pipeline = 
     input_json = {"sensor": "temp", "value": 23.5, "unit": "C"}
     json = JSONAdapter(1)
     json.process(input_json)

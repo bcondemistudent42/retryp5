@@ -13,11 +13,11 @@ class DataStream(ABC):
         return ""
 
     def filter_data(self, data_batch: List[Any], criteria: str) -> List[Any]:
-        print("Basic implementation")
+        print("Default implementation")
         return []
 
     def get_stats(self) -> Dict[str, Union[str, int, float]]:
-        print("Basic implementation")
+        print("Default implementation")
         return {}
 
 
@@ -30,6 +30,9 @@ class EventStream(DataStream):
     def process_batch(self, data_batch: List[Any]) -> str:
         if not isinstance(data_batch, list):
             raise ValueError("Databatch have to be a list")
+        for elt in data_batch:
+            if elt != "login" and elt != "error" and elt != "logout":
+                raise ValueError("One element in list is not correct")
         self.data = data_batch
         txt = f"Stream ID: {self.id}, Type: {self.data_type}\n"
         txt1 = f"Processing event batch: {data_batch}"
@@ -65,6 +68,8 @@ class TransactionStream(DataStream):
                 for x in data_batch if x.startswith(("buy", "sell"))
             }
         except Exception:
+            raise ValueError("One element of the list is not correct")
+        if len(data_batch) != len(self.dct.keys()):
             raise ValueError("One element of the list is not correct")
         txt = f"Stream ID: {self.id}, Type: {self.data_type}\n"
         txt1 = f"Processing transaction batch: {data_batch}"

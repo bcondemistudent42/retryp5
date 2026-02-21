@@ -39,7 +39,7 @@ class NumericProcessor(DataProcessor):
         return True
 
     def format_output(self, result: str) -> str:
-        return "Numeric Processor" + super().format_output(result)
+        return "Numeric Processor " + super().format_output(result)
 
 
 class TextProcessor(DataProcessor):

@@ -206,6 +206,12 @@ def main() -> None:
     nexus.add_pipeline("STREAM01", stream)
     nexus.process_data(input_stream, "STREAM01")
     print()
+    print(
+        "=== Pipeline Chaining Demo ===\n"
+        "\n"
+        "Pipeline A -> Pipeline B -> Pipeline C\n"
+        "Data flow: Raw -> Processed -> Analyzed -> Stored\n"
+    )
     return
 
 

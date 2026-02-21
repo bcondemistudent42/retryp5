@@ -22,39 +22,32 @@ class ProcessingStage(Protocol):
 
 class InputStage:
     def process(data: Any) -> dict[Any, Any]:
-        try:
-            if not isinstance(data, str) and not isinstance(data, dict):
-                raise ValueError
-        except Exception as e:
-            print(f"Error : {e}")
-            return {}
+        if not isinstance(data, str) and not isinstance(data, dict):
+            raise ValueError("The data must be STR on DICT type")
         print(f"Input: '{data}'")
         return {}
 
 
 class TransformStage:
     def process(data: Any) -> dict[Any, Any]:
-        try:
-            if isinstance(data, dict):
-                print("Transform: Enriched with metadata and validation")
-                data["type"] = 0
-                return data
-            elif isinstance(data, str):
-                if "," in data:
-                    print("Transform: Parsed and structured data")
-                    output = {x: randint(0, 100) for x in data.split(",")}
-                    output["type"] = 1
-                    return output
-                print("Transform: Aggregated and filtered")
-                output = {
-                          "reads": randint(0, 100),
-                          "avg": round(randint(0, 45)),
-                          "type": 2
-                }
+        if isinstance(data, dict):
+            print("Transform: Enriched with metadata and validation")
+            data["type"] = 0
+            return data
+        elif isinstance(data, str):
+            if "," in data:
+                print("Transform: Parsed and structured data")
+                output = {x: randint(0, 100) for x in data.split(",")}
+                output["type"] = 1
                 return output
-            else:
-                raise ValueError
-        except Exception:
+            print("Transform: Aggregated and filtered")
+            output = {
+                      "reads": randint(0, 100),
+                      "avg": round(randint(0, 45)),
+                      "type": 2
+            }
+            return output
+        else:
             print("The data type is not managed")
             return {}
 
